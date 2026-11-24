@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Azure Log Sources and Architecture | Azure Monitoring Test Lab</title>
+<meta name="description" content="Which Azure log sources feed a Log Analytics workspace, the tables they populate, and how alerts reach operators in project AZURE-1000.">
+<link rel="canonical" href="https://ghost4sec.github.io/co-pilot-test/log-sources.html">
+<link rel="stylesheet" href="/co-pilot-test/style.css">
+</head>
+<body>
+<header><nav aria-label="Site"><a href="/co-pilot-test/">Overview</a><a href="/co-pilot-test/log-sources.html">Log sources</a><a href="/co-pilot-test/kql-queries.html">KQL queries</a><a href="/co-pilot-test/alert-rules.html">Alert rules</a></nav></header>
+<main>
+<h1>Log sources and architecture</h1>
+<p>Project AZURE-1000 centralises logs in a single Log Analytics workspace. Resources send data through diagnostic settings or the Azure Monitor Agent (AMA). Alert rules query the workspace and trigger an action group that notifies operators.</p>
+<svg viewBox="0 0 720 150" role="img" aria-label="Data flow from Azure sources through diagnostic settings and AMA into Log Analytics, then alert rules, an action group and operators">
+<rect x="5" y="45" width="110" height="60" rx="6"/><text x="60" y="72" text-anchor="middle">Azure sources</text><text x="60" y="90" text-anchor="middle">subscriptions, VMs</text>
+<rect x="150" y="45" width="120" height="60" rx="6"/><text x="210" y="72" text-anchor="middle">Diagnostic</text><text x="210" y="90" text-anchor="middle">settings / AMA</text>
+<rect x="305" y="45" width="110" height="60" rx="6"/><text x="360" y="72" text-anchor="middle">Log Analytics</text><text x="360" y="90" text-anchor="middle">workspace</text>
+<rect x="450" y="45" width="100" height="60" rx="6"/><text x="500" y="80" text-anchor="middle">Alert rules</text>
+<rect x="585" y="15" width="130" height="50" rx="6"/><text x="650" y="45" text-anchor="middle">Action group</text>
+<rect x="585" y="85" width="130" height="50" rx="6"/><text x="650" y="115" text-anchor="middle">Operators</text>
+<path d="M115 75H150M270 75H305M415 75H450M550 75L585 40M650 65V85"/>
+</svg>
+<h2>Log sources and destination tables</h2>
+<div class="tw"><table>
+<thead><tr><th>Source</th><th>How it is collected</th><th>Main table(s)</th></tr></thead>
+<tbody>
+<tr><td>Azure Activity Log</td><td>Subscription diagnostic setting</td><td><code>AzureActivity</code></td></tr>
+<tr><td>Microsoft Entra sign-ins and audit</td><td>Entra diagnostic settings</td><td><code>SigninLogs</code>, <code>AuditLogs</code></td></tr>
+<tr><td>Resource logs (Key Vault, storage, NSG)</td><td>Resource diagnostic settings</td><td><code>AzureDiagnostics</code> or resource-specific tables</td></tr>
+<tr><td>Virtual machine health and performance</td><td>Azure Monitor Agent with a data collection rule</td><td><code>Heartbeat</code>, <code>Perf</code>, <code>Event</code>, <code>Syslog</code></td></tr>
+</tbody></table></div>
+<h2>Design notes</h2>
+<ul>
+<li>Use one workspace per environment so test data stays separate from production.</li>
+<li>Set retention per table. Keep security-relevant tables longer than performance counters.</li>
+<li>Apply diagnostic settings with Azure Policy so new resources are covered automatically.</li>
+<li>Restrict workspace access with Azure RBAC and use table-level access where needed.</li>
+</ul>
+<p>Next: <a href="/co-pilot-test/kql-queries.html">sample KQL queries</a> for these tables, and <a href="/co-pilot-test/alert-rules.html">alert rules</a> built on them.</p>
+</main>
+<footer>Fictional test project (AZURE-1000). No real customer data, credentials or production resources.</footer></body></html>
