@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample KQL Queries for Azure Monitor | Azure Monitoring Test Lab</title>
+<meta name="description" content="Sample Kusto (KQL) queries for Log Analytics: failed Azure operations, role assignments, resource deletions, failed sign-ins and VM heartbeat gaps.">
+<link rel="canonical" href="https://ghost4sec.github.io/co-pilot-test/kql-queries.html">
+<link rel="stylesheet" href="/co-pilot-test/style.css">
+</head>
+<body>
+<header><nav aria-label="Site"><a href="/co-pilot-test/">Overview</a><a href="/co-pilot-test/log-sources.html">Log sources</a><a href="/co-pilot-test/kql-queries.html">KQL queries</a><a href="/co-pilot-test/alert-rules.html">Alert rules</a></nav></header>
+<main>
+<h1>Sample KQL queries</h1>
+<p>These queries run in the Log Analytics workspace for project AZURE-1000. They assume the sources on the <a href="/co-pilot-test/log-sources.html">log sources page</a> are connected. Adjust time ranges to suit.</p>
+<h2>Failed administrative operations (last 24 hours)</h2>
+<pre><code>AzureActivity
+| where TimeGenerated &gt; ago(24h)
+| where CategoryValue == "Administrative"
+| where ActivityStatusValue == "Failure"
+| summarize Failures = count() by Caller, OperationNameValue
+| order by Failures desc</code></pre>
+<h2>New role assignments</h2>
+<pre><code>AzureActivity
+| where OperationNameValue =~ "Microsoft.Authorization/roleAssignments/write"
+| where ActivityStatusValue == "Success"
+| project TimeGenerated, Caller, ResourceGroup, _ResourceId
+| order by TimeGenerated desc</code></pre>
+<h2>Resource deletions</h2>
+<pre><code>AzureActivity
+| where OperationNameValue endswith "/delete"
+| where ActivityStatusValue == "Success"
+| project TimeGenerated, Caller, OperationNameValue, ResourceGroup, _ResourceId</code></pre>
+<h2>Accounts with many failed sign-ins</h2>
+<pre><code>SigninLogs
+| where TimeGenerated &gt; ago(1h)
+| where ResultType != "0"
+| summarize FailedSignIns = count() by UserPrincipalName, IPAddress
+| where FailedSignIns &gt; 10
+| order by FailedSignIns desc</code></pre>
+<h2>Virtual machines that stopped reporting</h2>
+<pre><code>Heartbeat
+| summarize LastHeartbeat = max(TimeGenerated) by Computer
+| where LastHeartbeat &lt; ago(15m)</code></pre>
+<h2>Average CPU by machine (5-minute bins)</h2>
+<pre><code>Perf
+| where ObjectName == "Processor" and CounterName == "% Processor Time"
+| where InstanceName == "_Total"
+| summarize AvgCpu = avg(CounterValue) by Computer, bin(TimeGenerated, 5m)
+| render timechart</code></pre>
+<p>To turn a query into a notification, see <a href="/co-pilot-test/alert-rules.html">alert rules</a>. Reference: <a href="https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/">Kusto Query Language documentation</a>.</p>
+</main>
+<footer>Fictional test project (AZURE-1000). No real customer data, credentials or production resources.</footer></body></html>
