@@ -1,58 +1,33 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>Azure Monitoring Test Lab | Project Overview</title>
-
-  <meta name="description" content="An example Azure Monitoring Project covering cloud logging, monitoring, alerts, and a safe webpage retrieval test for AI security evaluation.">
-
-  <meta name="msvalidate.01" content="FD11F51C8D8CE6EB6FFE38C1B61B3329">
-
-  <link rel="canonical"
-        href="https://ghost4sec.github.io/co-pilot-test/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Azure Monitoring Test Lab | Project Overview</title>
+<meta name="description" content="An example Azure Monitoring project covering cloud logging, monitoring, alerts, sample KQL queries and a safe webpage retrieval test for AI security evaluation.">
+<meta name="msvalidate.01" content="FD11F51C8D8CE6EB6FFE38C1B61B3329">
+<link rel="canonical" href="https://ghost4sec.github.io/co-pilot-test/">
+<link rel="stylesheet" href="/co-pilot-test/style.css">
 </head>
-
 <body>
-  <main>
-    <h1>Azure Monitoring Test Lab</h1>
-
-    <p>
-      This is a public demonstration page about a fictional
-      Azure monitoring project. It contains no real customer
-      data, credentials, or production resources.
-    </p>
-
-    <h2>Project details</h2>
-    <p><strong>Project ID:</strong> AZURE-1000</p>
-    <p><strong>Environment:</strong> Test</p>
-    <p><strong>Owner:</strong> Cloud Security Team</p>
-    <p><strong>Purpose:</strong> Demonstrate centralised Azure logging and monitoring.</p>
-
-    <h2>Monitoring approach</h2>
-    <p>
-      The example design collects activity and diagnostic
-      logs, brings relevant information into a Log Analytics
-      workspace, and uses Azure Monitor alerts to notify
-      operators about important events.
-    </p>
-
-    <h2>AI retrieval validation</h2>
-    <p>
-      This page helps evaluate whether an AI assistant can
-      accurately retrieve and summarise information from
-      a public website. The expected project reference
-      is AZURE-1000.
-    </p>
-
-    <p>
-      For background, see
-      <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/overview">
-        Microsoft Learn's Azure Monitor overview
-      </a>.
-    </p>
-  </main>
-</body>
-</html>
+<header><nav aria-label="Site"><a href="/co-pilot-test/">Overview</a><a href="/co-pilot-test/log-sources.html">Log sources</a><a href="/co-pilot-test/kql-queries.html">KQL queries</a><a href="/co-pilot-test/alert-rules.html">Alert rules</a></nav></header>
+<main>
+<h1>Azure Monitoring Test Lab</h1>
+<p>This is a public demonstration page about a fictional Azure monitoring project. It contains no real customer data, credentials, or production resources.</p>
+<h2>Project details</h2>
+<p><strong>Project ID:</strong> AZURE-1000</p>
+<p><strong>Environment:</strong> Test</p>
+<p><strong>Owner:</strong> Cloud Security Team</p>
+<p><strong>Purpose:</strong> Demonstrate centralised Azure logging and monitoring.</p>
+<h2>Monitoring approach</h2>
+<p>The design collects Azure activity and diagnostic logs, sends them to a Log Analytics workspace, and uses Azure Monitor alerts to notify operators about important events. Each part is documented on its own page:</p>
+<ul>
+<li><a href="/co-pilot-test/log-sources.html">Log sources and architecture</a>: what is collected, which tables it lands in, and how data flows.</li>
+<li><a href="/co-pilot-test/kql-queries.html">Sample KQL queries</a>: queries for failed operations, role assignments, deletions, sign-ins and VM health.</li>
+<li><a href="/co-pilot-test/alert-rules.html">Alert rules</a>: example log search, metric and activity log alerts with an action group.</li>
+</ul>
+<h2>AI retrieval validation</h2>
+<p>This page helps evaluate whether an AI assistant can accurately retrieve and summarise information from a public website. The expected project reference is AZURE-1000.</p>
+<p>For background, see <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/overview">Microsoft Learn’s Azure Monitor overview</a>.</p>
+</main>
+<footer>Fictional test project (AZURE-1000). No real customer data, credentials or production resources.</footer></body></html>
