@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Azure Monitor Alert Rule Examples | Azure Monitoring Test Lab</title>
+<meta name="description" content="Example Azure Monitor alert rules: log search alert on role assignments, metric alert on CPU, activity log alert, and an action group, with Azure CLI snippets.">
+<link rel="canonical" href="https://ghost4sec.github.io/co-pilot-test/alert-rules.html">
+<link rel="stylesheet" href="/co-pilot-test/style.css">
+</head>
+<body>
+<header><nav aria-label="Site"><a href="/co-pilot-test/">Overview</a><a href="/co-pilot-test/log-sources.html">Log sources</a><a href="/co-pilot-test/kql-queries.html">KQL queries</a><a href="/co-pilot-test/alert-rules.html">Alert rules</a></nav></header>
+<main>
+<h1>Alert rules</h1>
+<p>Alerts in project AZURE-1000 use three rule types, all routed to one action group.</p>
+<div class="tw"><table>
+<thead><tr><th>Alert</th><th>Rule type</th><th>Signal</th><th>Severity</th></tr></thead>
+<tbody>
+<tr><td>New role assignment</td><td>Log search</td><td>KQL on <code>AzureActivity</code>, count &gt; 0 in 5 minutes</td><td>2</td></tr>
+<tr><td>High CPU on a VM</td><td>Metric</td><td>Percentage CPU &gt; 85% for 10 minutes</td><td>3</td></tr>
+<tr><td>Service health event</td><td>Activity log</td><td>Service Health incidents in the subscription</td><td>2</td></tr>
+</tbody></table></div>
+<h2>Create the action group</h2>
+<pre><code>az monitor action-group create \
+  --resource-group rg-monitoring-test \
+  --name ag-operators \
+  --short-name ops \
+  --action email on-call ops@example.com</code></pre>
+<h2>Log search alert for role assignments</h2>
+<p>Uses the <a href="/co-pilot-test/kql-queries.html">role assignment query</a> as the alert condition.</p>
+<pre><code>az monitor scheduled-query create \
+  --resource-group rg-monitoring-test \
+  --name alert-new-role-assignment \
+  --scopes &lt;workspace-resource-id&gt; \
+  --condition "count 'q1' &gt; 0" \
+  --condition-query q1="AzureActivity | where OperationNameValue =~ 'Microsoft.Authorization/roleAssignments/write' | where ActivityStatusValue == 'Success'" \
+  --evaluation-frequency 5m \
+  --window-size 5m \
+  --severity 2 \
+  --action-groups &lt;action-group-resource-id&gt;</code></pre>
+<h2>Metric alert for CPU</h2>
+<pre><code>az monitor metrics alert create \
+  --resource-group rg-monitoring-test \
+  --name alert-vm-high-cpu \
+  --scopes &lt;vm-resource-id&gt; \
+  --condition "avg Percentage CPU &gt; 85" \
+  --window-size 10m \
+  --evaluation-frequency 5m \
+  --severity 3 \
+  --action ag-operators</code></pre>
+<h2>Good practice</h2>
+<ul>
+<li>Match severity to response time. Reserve severity 0 and 1 for events that need immediate action.</li>
+<li>Use alert processing rules to suppress notifications during planned maintenance.</li>
+<li>Review each rule regularly and remove alerts nobody acts on.</li>
+</ul>
+<p>Command options can change between Azure CLI versions, so check the <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview">Azure Monitor alerts documentation</a> before use. Data sources are listed on the <a href="/co-pilot-test/log-sources.html">log sources page</a>.</p>
+</main>
+<footer>Fictional test project (AZURE-1000). No real customer data, credentials or production resources.</footer></body></html>
